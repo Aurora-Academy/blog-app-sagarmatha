@@ -11,9 +11,9 @@ const Schema = Joi.object({
 });
 
 const validate = (req, res, next) => {
-  req.body.author = req.body.author || req.currentUser;
+  req.body.author = req.body.author || String(req.currentUser);
   const { error } = Schema.validate(req.body);
-  if (error) next(e);
+  if (error) next(error);
   next();
 };
 

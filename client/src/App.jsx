@@ -10,7 +10,10 @@ import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { VerifyFPassword } from "./pages/VerifyFPassword";
-import { AdminBlogs } from "./pages/admin/Blogs";
+import { AdminBlogs } from "./pages/admin/blogs/List";
+import { AddBlog } from "./pages/admin/blogs/Add";
+import { BlogEdit } from "./pages/admin/blogs/Edit";
+
 import { AdminUsers } from "./pages/admin/Users";
 import { AdminProfile } from "./pages/admin/Profile";
 import { AppLayout } from "./layouts/AppLayout";
@@ -42,6 +45,22 @@ function App() {
             element={
               <PrivateRoute role={["admin", "user"]}>
                 <AdminBlogs />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="blogs/:id"
+            element={
+              <PrivateRoute role={["admin", "user"]}>
+                <BlogEdit />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="blogs/add"
+            element={
+              <PrivateRoute role={["admin", "user"]}>
+                <AddBlog />
               </PrivateRoute>
             }
           />

@@ -1,6 +1,8 @@
+import { Button, ButtonGroup, ButtonToolbar } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { listBlogs } from "../../slices/blogSlice";
+import { listBlogs } from "../../../slices/blogSlice";
 
 export const AdminBlogs = () => {
   const dispatch = useDispatch();
@@ -15,11 +17,11 @@ export const AdminBlogs = () => {
   return (
     <div className="col-md-12">
       <div className="container d-grid gap-4">
-        <div className="d-flex justify-content-between">
-          <h2>Blogs</h2>
-          <button className="btn btn-dark">
-            <i className="fa fa-plus"></i>&nbsp;New Blog
-          </button>
+        <div className="flex d-flex justify-content-between">
+          <h3>Blogs</h3>
+          <Link to="/admin/blogs/add" className="btn btn-danger">
+            New Blog
+          </Link>
         </div>
         <div className="d-flex">
           <div className="card w-100 shadow">
@@ -61,9 +63,18 @@ export const AdminBlogs = () => {
                             </div>
                           </td>
                           <td>
-                            <button className="btn btn-custom">
-                              <i className="fa fa-eye"></i>
-                            </button>
+                            <ButtonToolbar>
+                              <ButtonGroup className="me-2">
+                                <Button>
+                                  <i className="fa fa-eye"></i>
+                                </Button>
+                              </ButtonGroup>
+                              <ButtonGroup className="me-2">
+                                <Button className="btn btn-danger">
+                                  <i className="fa fa-trash"></i>
+                                </Button>
+                              </ButtonGroup>
+                            </ButtonToolbar>
                           </td>
                         </tr>
                       );
