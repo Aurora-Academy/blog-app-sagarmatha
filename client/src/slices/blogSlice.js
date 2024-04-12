@@ -3,9 +3,10 @@ import BlogServices from "../services/blogs";
 
 const initialState = {
   blogs: [],
+  blog: {},
   total: 0,
   currentPage: 1,
-  limit: 20,
+  limit: 90,
   error: "",
   loading: false,
 };
@@ -14,6 +15,13 @@ export const listBlogs = createAsyncThunk(
   "blogs/listBlogs",
   async ({ limit, page }) => {
     const res = await BlogServices.list(limit, page);
+    return res.data;
+  }
+);
+export const createBlog = createAsyncThunk(
+  "blogs/createBlog",
+  async (payload) => {
+    const res = await BlogServices.create(payload);
     return res.data;
   }
 );
@@ -43,6 +51,17 @@ const blogSlice = createSlice({
         state.total = 0;
       })
       .addCase(listBlogs.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(createBlog.fulfilled, (state, action) => {
+        state.loading = false;
+        state.blog = action.payload.data;
+      })
+      .addCase(createBlog.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createBlog.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

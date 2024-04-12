@@ -14,6 +14,7 @@ const create = (payload) => {
   return instance.post(URLS.GET_ONE_BLOG, payload, {
     headers: {
       access_token: localStorage.getItem("access_token"),
+      "Content-Type": "multipart/form-data",
     },
   });
 };
