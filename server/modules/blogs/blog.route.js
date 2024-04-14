@@ -131,4 +131,18 @@ router.patch("/:slug", checkRole(["user", "admin"]), async (req, res, next) => {
   }
 });
 
+router.delete(
+  "/:slug",
+  checkRole(["user", "admin"]),
+  async (req, res, next) => {
+    try {
+      const { slug } = req.params;
+      const result = await Controller.remove(slug);
+      res.json({ data: result });
+    } catch (e) {
+      next(e);
+    }
+  }
+);
+
 module.exports = router;

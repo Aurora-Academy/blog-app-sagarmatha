@@ -25,6 +25,31 @@ export const createBlog = createAsyncThunk(
     return res.data;
   }
 );
+export const getBySlug = createAsyncThunk("blogs/getBySlug", async (slug) => {
+  const res = await BlogServices.getBySlug(slug);
+  return res.data;
+});
+
+export const removeBlog = createAsyncThunk("blogs/removeBlog", async (slug) => {
+  const res = await BlogServices.removeBlog(slug);
+  return res.data;
+});
+
+export const changeStatus = createAsyncThunk(
+  "blogs/changeStatus",
+  async (slug) => {
+    const res = await BlogServices.changeStatus(slug);
+    return res.data;
+  }
+);
+
+export const updateBlog = createAsyncThunk(
+  "blogs/updateBlog",
+  async ({ slug, payload }) => {
+    const res = await BlogServices.updateBlog(slug, payload);
+    return res.data;
+  }
+);
 
 const blogSlice = createSlice({
   name: "blogs",
@@ -62,6 +87,56 @@ const blogSlice = createSlice({
         state.loading = true;
       })
       .addCase(createBlog.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(getBySlug.fulfilled, (state, action) => {
+        state.loading = false;
+        state.blog = action.payload.data;
+      })
+      .addCase(getBySlug.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getBySlug.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(removeBlog.fulfilled, (state, action) => {
+        state.loading = false;
+        const remaining = state.blogs.filter(
+          (blog) => blog?.slug !== action.meta.arg
+        );
+        state.blogs = remaining;
+      })
+      .addCase(removeBlog.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(removeBlog.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(changeStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        const existing = state.blogs.find(
+          (blog) => blog.slug === action.payload.data.slug
+        );
+        existing.status = action.payload.data.status;
+      })
+      .addCase(changeStatus.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(changeStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(updateBlog.fulfilled, (state, action) => {
+        state.loading = false;
+        state.blog = action.payload.data;
+      })
+      .addCase(updateBlog.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateBlog.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

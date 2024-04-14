@@ -279,16 +279,13 @@ const getById = async (payload) => {
 
 const updateBySlug = async (payload) => {
   const { slug, roles, author, ...rest } = payload;
-  // 1. Blog exist ??
-  // 2. title change?? => slug change
-  // 3. user role,?? ==> only author can change the data
   const blog = await blogModel.findOne({ slug });
   if (!blog) throw new Error("Blog not found");
   if (rest.title) {
     rest.slug = slugify(rest.title);
   }
-  if (roles.include("user") && !author === blog.author) {
-    throw new Error("Invalid Author");
+  if (!roles.includes("admin") && author !== blog?.author) {
+    throw new Error("Bad Actor");
   }
   return blogModel.updateOne({ _id: blog._id }, rest);
 };
@@ -296,10 +293,15 @@ const updateBySlug = async (payload) => {
 const changeStatus = async (slug) => {
   const blog = await blogModel.findOne({ slug });
   if (!blog) throw new Error("Blog not found");
-  return blogModel.updateOne(
+  return blogModel.findOneAndUpdate(
     { slug },
-    { status: blog.status === "draft" ? "published" : "draft" }
+    { status: blog?.status === "draft" ? "published" : "draft" },
+    { upsert: true, new: true }
   );
+};
+
+const remove = (slug) => {
+  return blogModel.deleteOne({ slug });
 };
 
 module.exports = {
@@ -310,5 +312,6 @@ module.exports = {
   getPublishedBlogs,
   getBySlug,
   getById,
+  remove,
   updateBySlug,
 };
